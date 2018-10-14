@@ -1,0 +1,55 @@
+<!-- 
+
+  from the page at 
+  https://developers.google.com/identity/sign-in/web/sign-in
+ -->
+
+
+
+
+<script>
+
+function onSignIn(googleUser) {
+  var profile = googleUser.getBasicProfile();
+
+  $("#content p").append('ID: ' + profile.getId() + '<br>');
+  $("#content p").append('Name: ' + profile.getName() + '<br>');
+  $("#content p").append('Image URL: ' + profile.getImageUrl() + '<br>');
+  $("#content p").append('Email: ' + profile.getEmail() + '<br>'); // This is null if the 'email' scope is not present.
+  
+  console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+  console.log('Name: ' + profile.getName());
+  console.log('Image URL: ' + profile.getImageUrl());
+  console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+
+
+  $(".g-signin2").hide();
+  $(".g-signout2").show();
+
+
+  initClient();
+  
+
+}
+
+function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      console.log('User signed out.');
+      $(".g-signin2").show();
+      $(".g-signout2").hide();
+
+    });
+  }
+</script>
+
+
+
+<h3 class="mdc-typography--headline3">Google Sign-In</h3>
+<div class="g-signin2" data-onsuccess="onSignIn"></div>
+<p>
+<a class="g-signout2" href="#" onclick="signOut();">Sign out</a>
+</p>
+
+
+
