@@ -1,4 +1,4 @@
-var cacheName = 'atif-v1';
+var cacheName = 'caq-v2';
 var appShellFiles = [
  "./index.html",
  "./script.js",

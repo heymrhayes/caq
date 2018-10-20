@@ -1,6 +1,6 @@
 {
-  "name": "Class Activity App",
-  "short_name": "CAApp",
+  "name": "Class Activity Questions",
+  "short_name": "CAQ",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "navy",
