@@ -6,15 +6,22 @@
 	<meta name="viewport" content="width=device-width">
   	<meta name="google-signin-client_id" content="455879692718-31a814ua0ch6tal2errkrtf4976ckq1h.apps.googleusercontent.com">
 
-	<title>My Cool App</title>
+	<title>AF-IT App</title>
 	<link rel="manifest" href="./manifest.json">
-	
 	<link rel="stylesheet" href="https://unpkg.com/material-components-web@0.40.0/dist/material-components-web.min.css" />
-	<link href="style.css" rel="stylesheet" type="text/css" />
+	
+	<link href="style.css" rel="stylesheet" type="text/css" />	
+
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+	
+	<style>
+		:root {
+		  --mdc-theme-primary: navy ;
+		}
+	</style>
 </head>
 
-<body>
+<body class="mdc-typography--body1">
 	<!-- top nav bar -->
 	<header class="mdc-top-app-bar">
 		<div class="mdc-top-app-bar__row">
@@ -28,8 +35,8 @@
 	<!-- the navigation drawer -->
 	<aside class="mdc-drawer mdc-drawer--modal" data-mdc-auto-init="MDCDrawer">
 		<div class="mdc-drawer__header">
-			<h3 class="mdc-drawer__title">Mail</h3>
-			<h6 class="mdc-drawer__subtitle">email@material.io</h6>
+			<h3 class="mdc-drawer__title">AF-IT App</h3>
+			<!--<h6 class="mdc-drawer__subtitle">email@material.io</h6>-->
 		</div>
 		<div class="mdc-drawer__content">
 			<nav class="mdc-list">
@@ -43,10 +50,42 @@
   <div class="mdc-drawer-scrim"></div>
 	<div id="contentArea">
     <div class="mdc-top-app-bar--fixed-adjust"></div>
-    <div id="content" class="mdc-typography--body1"></div>
+    <div id="overlay"></div>
+    <div id="loading">
+    		<img src="loading.gif" alt="loading indicator">
+    		<p></p>
+    </div>
+    <div id="content" class="mdc-typography--body1">
+    	
+    </div>
   </div>
-	
   
+	
+	<div class="mdc-dialog"
+     role="alertdialog"
+     aria-modal="true"
+     aria-labelledby="my-dialog-title"
+     aria-describedby="my-dialog-content"
+     data-mdc-auto-init="MDCDialog">
+  <div class="mdc-dialog__container">
+    <div class="mdc-dialog__surface">
+      <!-- Title cannot contain leading whitespace due to mdc-typography-baseline-top() -->
+      <h2 class="mdc-dialog__title"><!--
+     -->Dialog Title<!--
+   --></h2>
+      <div class="mdc-dialog__content" id="my-dialog-content">
+        Dialog body text goes here.
+      </div>
+      <footer class="mdc-dialog__actions">
+        <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="no">OK</button>
+      </footer>
+    </div>
+  </div>
+  <div class="mdc-dialog__scrim"></div>
+</div>
+	
+	
+  <script src="app-data.js"></script>
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script src="https://unpkg.com/material-components-web@0.40.0/dist/material-components-web.min.js"></script>
@@ -60,16 +99,16 @@
   <script src="https://apis.google.com/js/api.js"></script>
 
   <script>
-  	if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js')
-  .then(function(reg) {
-    // registration worked
-    console.log('Registration succeeded. Scope is ' + reg.scope);
-  }).catch(function(error) {
-    // registration failed
-    console.log('Registration failed with ' + error);
-  });
-}
+		if ('serviceWorker' in navigator) {
+		  navigator.serviceWorker.register('./sw.js')
+		  .then(function(reg) {
+		    // registration worked
+		    console.log('Registration succeeded. Scope is ' + reg.scope);
+		  }).catch(function(error) {
+		    // registration failed
+		    console.log('Registration failed with ' + error);
+		  });
+		}
   </script>
 
 

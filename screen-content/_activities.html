@@ -1,0 +1,63 @@
+<div id="screenContent">
+<!--<h3 class="mdc-typography--headline3">Activities</h3>-->
+<ul class="mdc-list demo-list mdc-list--two-line">
+  <li class="template mdc-list-item mdc-ripple-upgraded" tabindex="-1"><span class="mdc-list-item__text"><span class="mdc-list-item__primary-text">Line item</span><span class="mdc-list-item__secondary-text">Secondary text</span></span></li>
+</ul>
+</div>
+
+
+<script>
+
+    setTitle("Activities");
+
+    showLoading("Loading activities for " + app.currentInstructor.displayName + " ...");
+
+    function displayActivities(activities) {
+
+        // clear existing
+        $("#screenContent ul li").not(".template").remove();
+        $("#screenContent ul li").off("click");
+
+        hideLoading();
+
+        $.each(activities, function(i,v) {
+          var clone = $("#screenContent li.template").clone();
+          clone.find(".mdc-list-item__primary-text").text(v.displayName);
+          //clone.find(".mdc-list-item__secondary-text").text(v.desc);
+          clone.removeClass("template");
+          clone.attr("id", v.id);
+          $("#screenContent ul").append(clone);  
+        });
+        
+
+        //  click sets current activity
+        $("#screenContent ul li").on("click", function(e) {
+            var target = $(this).attr("id");
+            console.log(target);
+            app.currentActivity = app.activities.find(function(obj) {
+                    return obj.id == target;
+            });
+            app.currentActivity.currentQuestionIndex = 0;
+            loadScreen("groups");
+        });        
+        
+        
+        
+    }
+    
+    
+    if (!app.activitiesLoadedP) {
+        // get and display the problems
+        $.get(app.endpoint + "?action=getActivities&instructor=" + app.currentInstructor.username)
+            .done(function(response){
+                app.activities = response;
+                app.activitiesLoadedP = true;
+                displayActivities(app.activities);
+        });
+    }
+    else {
+        displayActivities(app.activities);
+    }
+
+    
+</script>

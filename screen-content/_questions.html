@@ -1,0 +1,371 @@
+<div id="screenContent">
+
+<ul class="mdc-list demo-list mdc-list--two-line">
+  <li class="template mdc-list-item mdc-ripple-upgraded" tabindex="-1"><span class="mdc-list-item__text"><span class="mdc-list-item__primary-text">Line item</span><span class="mdc-list-item__secondary-text">Secondary text</span></span></li>
+</ul>
+
+<form id="frmShortAnswer">
+    <div id="shortAnswer" class="mdc-text-field text-field mdc-text-field--with-trailing-icon mdc-ripple-upgraded" data-mdc-auto-init="MDCTextField">
+      <input type="text" class="mdc-text-field__input" id="my-text-field">
+      <label class="mdc-floating-label" for="my-text-field">Hint text</label>
+      <i class="material-icons mdc-text-field__icon"></i>
+      <div class="mdc-line-ripple"></div>
+    </div>
+    <div>
+    <button id="checkAnswer" class="mdc-button mdc-button--raised">
+      <i class="material-icons mdc-button__icon" aria-hidden="true">help</i>
+      Check Answer
+    </button>
+    </div>
+</form>
+
+
+<button id="btnNextQ" class="mdc-button mdc-button--raised">
+  <i class="material-icons mdc-button__icon" aria-hidden="true">forward</i>
+  Next Question
+</button>
+
+<div id="completion">
+   <h3 class="mdc-typography--headline3">Activity complete.</h3>
+</div>
+</div>
+
+
+
+<style>
+    #frmShortAnswer {display:none; margin-top: 24px;}
+    #frmShortAnswer > div {margin-bottom: 24px;}
+    .answered {opacity: .40;}
+    .correct {background-color: green;}
+    .incorrect {background-color: red; }
+    #completion {display:none;}
+    
+    #btnNextQ {position: absolute; bottom: 15px;}
+    #screenContent {height:100%;}
+    
+</style>
+
+
+<script>
+    
+    app.currentActivity.currentQuestionIndex = 0;
+    
+    showLoading("Loading questions for " + app.currentActivity.displayName + " ...");
+
+    
+    
+    window.mdc.autoInit($("#screenContent")[0]);
+    
+    var shortAnswer = $("#shortAnswer")[0].MDCTextField;
+    
+    if (app.currentActivity.completionMessage && app.currentActivity.completionMessage != "")
+        $("#completion h3").text(app.currentActivity.completionMessage)
+    
+    
+    // event handlers
+    
+    $("#btnNextQ").on("click", function(e) {
+        if ($(this).text() == "Next Question") {
+            showLoading("Loading next question...")
+            app.currentActivity.currentQuestionIndex++; 
+            displayQuestion(app.currentActivity.questions, app.currentActivity.currentQuestionIndex);                 
+        } else {
+            displayCompletion(); 
+        }
+  
+    });
+    
+    $("#checkAnswer").on("click", function() {
+        checkShortAnswer(); 
+    });
+    
+    $("#shortAnswer .mdc-text-field__input").on("focus", function() {
+       $("#shortAnswer i").text("");
+    });
+    
+    $("#shortAnswer .mdc-text-field__input").on("input", function() {
+       if ($(this).val().trim() != "") {
+            $("#checkAnswer").prop("disabled", false);
+       }
+    });    
+    
+       
+
+
+    function displayCompletion(){
+        $("#frmShortAnswer").hide();
+        $("#screenContent ul").hide();
+        $("#btnNextQ").hide();
+        setTitle("Activity Complete");
+        $("#completion").show();
+    }
+
+    function getArrayOfAnswersForQuestion(question) {
+        var answerOptionSuffixes = ['A','B','C','D','E'];
+        var answers = [], answer = {}, answerText = "", answerFeedbackText = "";
+        
+        $.each(answerOptionSuffixes, function(i,v){
+            answer = {};
+            answerText = question["option" + v];
+            if (answerText != "")  {
+                answer.option = v;
+                answer.text = answerText;
+                answer.feedbackText = question["option" + v + "Feedback"];
+            };
+            answers.push(answer);
+        });
+        
+        return answers;
+    }
+
+    function displayQuestion(questions,index) {
+        setTitle("Question " + (index + 1));   
+        
+        $("#frmShortAnswer").hide();
+        $("#screenContent ul").hide();
+        $("#shortAnswer i").text("");
+        $("#shortAnswer i").css("color", "black");
+        
+         $("#shortAnswer .mdc-text-field__input").prop("disabled", false);
+
+        $("#btnNextQ").prop("disabled", true);
+
+        if (index >= questions.length -1) {
+            $("#btnNextQ").text("Continue");
+        } else {
+            $("#btnNextQ").text("Next Question");
+        }
+
+        
+        app.currentActivity.currentQuestionIndex = index;
+        
+        var question = app.currentActivity.questions[app.currentActivity.currentQuestionIndex];
+        
+        app.currentActivity.currentQuestion = question;
+        
+        question.countIncorrectAnswers = 0;
+        question.countCorrectAnswers = 0;
+        
+        
+        // clear existing
+        $("#screenContent ul li").not(".template").remove();
+        $("#screenContent ul li").off("click");
+
+        switch(question.type.toLowerCase()) {
+            case "mc":
+                var answers = getArrayOfAnswersForQuestion(question);
+                app.currentActivity.currentQuestion.answers = answers;            
+                
+                $.each(answers, function(i,v) {
+                  var clone = $("#screenContent li.template").clone();
+                  clone.find(".mdc-list-item__primary-text").text(v.option);
+                  if (v.text != v.option) {
+                      clone.find(".mdc-list-item__primary-text").text(v.option + " " + v.text);
+                  }
+                  clone.find(".mdc-list-item__secondary-text").remove();
+                  clone.removeClass("template");
+                  clone.attr("id", v.option);
+                  $("#screenContent ul").append(clone);  
+                });
+                $("#screenContent ul").show();
+                break;
+            case "sa":
+                $("#shortAnswer .mdc-text-field__input").val("");
+                $("#shortAnswer i").text("");
+                $("#frmShortAnswer").show();
+                $("#frmShortAnswer .mdc-floating-label").text(isNaN(app.currentActivity.currentQuestion.correctAnswer) ? "Enter text" : "Enter a number")
+                
+                break;
+        }
+
+        //  click sets current answer
+        $("#screenContent ul li").on("click", function(e) {
+            var selectedAnswerOption = $(this).attr("id");
+            $(this).off("click");
+            app.currentActivity.currentQuestion.currentAnswer = app.currentActivity.currentQuestion.answers.find(function(obj) {
+                    return obj.option == selectedAnswerOption;
+            });
+            app.currentActivity.currentQuestion.currentAnswerText = app.currentActivity.currentQuestion.currentAnswer.text;
+            checkCurrentAnswer($(this));
+        });        
+        
+        hideLoading();
+        
+    }
+
+    function checkCurrentAnswer(obj) {
+        obj.off("click");
+        
+        obj.addClass("answered");
+        
+        var correct = (app.currentActivity.currentQuestion.currentAnswer.option == app.currentActivity.currentQuestion.correctAnswer);
+        
+        app.currentActivity.currentQuestion.currentAnswer.correct = correct;
+        
+        if (correct) {
+            app.currentActivity.currentQuestion.countCorrectAnswers++;
+        } else {
+            app.currentActivity.currentQuestion.countIncorrectAnswers++;
+        }
+
+        sendAnswer();
+
+        obj.addClass(correct ? "correct" : "incorrect");
+        
+        
+        var answerFeedbackText = app.currentActivity.currentQuestion.currentAnswer.feedbackText.trim();
+        
+        if  (answerFeedbackText !="") {
+            $(".mdc-dialog__title").text(correct ? "Correct!" : "Incorrect");
+            $(".mdc-dialog__content").text(answerFeedbackText);
+            dialog.open();
+        }
+        
+        if (correct) {
+             $("#btnNextQ").prop("disabled", false);
+             $("#screenContent ul li").off("click");
+        }
+        if (!correct && app.currentActivity.msecDelayBetweenAnswers > 0) {
+            $("#overlay").show();
+            window.setTimeout(function() {
+                $("#overlay").hide();
+            },app.currentActivity.msecDelayBetweenAnswers);
+        }
+        
+        
+    }
+ 
+    function checkShortAnswer() {
+        $("#checkAnswer").prop("disabled", true);
+        
+        var answer = $("#shortAnswer .mdc-text-field__input").val().trim();
+        
+        app.currentActivity.currentQuestion.currentAnswerText = answer;
+        
+        app.currentActivity.currentQuestion.currentAnswer = {"text": answer };
+        
+        console.log(answer,app.currentActivity.currentQuestion.correctAnswer);
+        var correct = (answer == app.currentActivity.currentQuestion.correctAnswer);
+        
+        app.currentActivity.currentQuestion.currentAnswer.correct = correct;
+        
+        if (correct) {
+            app.currentActivity.currentQuestion.countCorrectAnswers++;
+            $("#shortAnswer .mdc-text-field__input").prop("disabled", true);
+        } else {
+            app.currentActivity.currentQuestion.countIncorrectAnswers++;
+        }
+        
+        sendAnswer();
+        
+        $("#shortAnswer i").text(correct? "check_circle_outline" : "highlight_off");
+        $("#shortAnswer i").css("color", correct? "green" : "red")
+        
+        
+        
+        
+        if (!correct && app.currentActivity.msecDelayBetweenAnswers > 0) {
+            $("#overlay").show();
+            window.setTimeout(function() {
+                $("#overlay").hide();
+            },app.currentActivity.msecDelayBetweenAnswers);
+        }
+        
+        
+        
+        
+        if (correct) {
+            $("#btnNextQ").prop("disabled", false);
+        } else {
+            showHintTextIfWrongAnswerThresholdReached(app.currentActivity.currentQuestion);
+        }
+    }  
+    
+    function showHintTextIfWrongAnswerThresholdReached(question) {
+        if (question.countIncorrectAnswers >= question.hintTextAfterWrongCount && question.hintText != "") {
+            question.sawHintTextP = true;
+            $(".mdc-dialog__title").text("Hint");
+            $(".mdc-dialog__content").text(app.currentActivity.currentQuestion.hintText);
+            dialog.open();
+        }            
+    }
+    
+    function sendAnswer() {
+        var instructor, activity, question, answer;
+        
+        instructor = app.currentInstructor.username;
+        activity = app.currentActivity.id;
+        question = app.currentActivity.currentQuestion.id;
+        answer = app.currentActivity.currentQuestion.currentAnswerText;
+        group = app.currentGroup.name;
+        correct = app.currentActivity.currentQuestion.currentAnswer.correct.toString();
+        countCorrect = app.currentActivity.currentQuestion.countCorrectAnswers;
+        countIncorrect = app.currentActivity.currentQuestion.countIncorrectAnswers;
+        
+        var url = app.endpoint + "?action=saveResponse";
+        url += "&instructor=" + instructor;
+        url += "&activity=" + activity;
+        url += "&group=" + group;
+        url += "&question=" + question;
+        url += "&answer=" + answer;
+        url += "&correct=" + correct;
+        url += "&countCorrect=" + countCorrect;
+        url += "&countIncorrect=" + countIncorrect;
+        
+        $.get(url)
+            .done(function(response) {
+                console.log(response)
+            })
+            .fail(function(err) {
+                console.log(err);
+            })
+        
+        
+    }
+    
+    function displayQuestions(questions) {
+
+        // clear existing
+        $("#screenContent ul li").not(".template").remove();
+        $("#screenContent ul li").off("click");
+
+        $.each(questions, function(i,v) {
+          var clone = $("#screenContent li.template").clone();
+          clone.find(".mdc-list-item__primary-text").text(v.displayName);
+          //clone.find(".mdc-list-item__secondary-text").text(v.desc);
+          clone.removeClass("template");
+          clone.attr("id", v.id);
+          $("#screenContent ul").append(clone);  
+        });
+        
+
+        //  click sets current activity
+        $("#screenContent ul li").on("click", function(e) {
+            var target = $(this).attr("id");
+            app.currentActivity.currentAnswer = app.currentActivity.questions.find(function(obj) {
+                    return obj.id == target;
+            });
+            
+        });        
+        
+        
+        
+    } 
+ 
+    if (!app.currentActivity.questionsLoadedP) {
+        // get and display the problems
+        $.get(app.endpoint + "?action=getQuestions&instructor=" + app.currentInstructor.username + "&activity=" + app.currentActivity.id)
+            .done(function(response){
+                app.currentActivity.questions = response;
+                app.currentActivity.questionsLoadedP = true;
+                //displayQuestions(app.currentActivity.questions);
+                displayQuestion(app.currentActivity.questions, 0);
+        });
+    }
+    else {
+        //displayQuestions(app.currentActivity.questions);
+        displayQuestion(app.currentActivity.questions, app.currentActivity.currentQuestionIndex);
+    }
+
+    
+</script>

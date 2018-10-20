@@ -1,0 +1,116 @@
+<div id="screenContent">
+<!--<h3 class="mdc-typography--headline3">Activities</h3>-->
+<p>Choose an existing group for this activity or create a new one.</p>
+
+<ul class="mdc-list demo-list mdc-list--two-line">
+  <li class="template mdc-list-item mdc-ripple-upgraded" tabindex="-1"><span class="mdc-list-item__text"><span class="mdc-list-item__primary-text">Line item</span><span class="mdc-list-item__secondary-text">Secondary text</span></span></li>
+</ul>
+
+<form id="frmCreateGroup">
+    <div class="mdc-text-field text-field mdc-text-field--with-trailing-icon mdc-ripple-upgraded" data-mdc-auto-init="MDCTextField">
+      <input type="text" class="mdc-text-field__input" id="groupName">
+      <label class="mdc-floating-label" for="groupName">Group Name</label>
+      <div class="mdc-line-ripple"></div>
+    </div>
+    <div class="mdc-text-field text-field mdc-text-field--textarea" data-mdc-auto-init="MDCTextField">
+        <textarea id="groupMembers" class="mdc-text-field__input"></textarea>
+        <label class="mdc-floating-label" for="groupMembers">Group members</label>
+    </div>    
+    <button id="saveGroup" class="mdc-button mdc-button--raised" disabled>
+      <i class="material-icons mdc-button__icon" aria-hidden="true">save</i>
+      Save Group
+    </button>
+</form>
+</div>
+
+<style>
+    #frmCreateGroup > div { margin-bottom: 24px;}
+</style>
+
+<script>
+
+    window.mdc.autoInit($("#screenContent")[0]);
+
+    setTitle("My Groups");
+    
+
+    function displayGroups() {
+        if (!app.myGroups ||  app.myGroups.length == 0) {
+            $("#screenContent p").text("Create a new group.")
+        } else {
+            if ($("#frmCreateGroup hr").length == 0) {
+                $("#frmCreateGroup").prepend("<hr>");
+            }
+            $("#screenContent p").text("Choose an existing group or create a new one.")
+        }
+        
+        
+        if (app.myGroups) {
+            // clear existing
+            $("#screenContent ul li").not(".template").remove();
+            $("#screenContent ul li").off("click");
+            $.each(app.myGroups, function(i,v) {
+                  var clone = $("#screenContent li.template").clone();
+                  clone.find(".mdc-list-item__primary-text").text("Name: " + v.name);
+                  clone.find(".mdc-list-item__secondary-text").text("Members: " + v.members);
+                  clone.removeClass("template");
+                  clone.attr("id", v.name);
+                  $("#screenContent ul").append(clone);  
+            });                      
+        }
+
+        
+
+        //  click sets current group
+        $("#screenContent ul li").on("click", function(e) {
+            var target = $(this).attr("id");
+            console.log(target);
+            app.currentGroup = app.myGroups.find(function(obj) {
+                    return obj.name == target;
+            });            
+            
+            loadScreen("questions");
+        });        
+        
+        
+        
+    }
+    
+    
+    function addGroup(){
+        if (!app.myGroups) {
+            app.myGroups = [];
+        }
+        
+        var group = {};
+        group.name = $("#groupName").val().trim();
+        group.members = $("#groupMembers").val().trim();
+        
+        app.myGroups.push(group);
+        app.currentGroup = group;
+        
+        $("#groupName").val("");
+        $("#groupMembers").val("");
+        
+        displayGroups();
+        
+    }
+    
+    displayGroups();
+    
+    $("textarea,input").on("input", function(e) {
+        console.log($("#groupName").val().trim(),$("#groupMembers").val().trim() );
+        
+        if ($("#groupName").val().trim() !="" &&
+                $("#groupMembers").val().trim() !="") {
+                    $("#saveGroup").prop("disabled", false);
+                } else {
+                    $("#saveGroup").prop("disabled", true);
+                }
+    }) 
+
+    $("#saveGroup").on("click", function(e){
+       addGroup(); 
+    });
+    
+</script>

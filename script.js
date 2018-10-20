@@ -1,29 +1,34 @@
 var navItems = [
-  {"label": "About", "screen": "about", "icon": "info"},
-  {"label": "Resources", "screen": "resources", "icon": "library_books"},
-  "divider",
-  {"label": "Data example", "screen": "data", "icon": "list"},
-  {"label": "Sheet as API", "screen": "sheet-as-api", "icon": "list"}
-  
-  // ,
-  // {"label": "Google Sign-in", "screen": "google-sign-in", "icon": "person"}
-  
+  // {"label": "Instructors", "screen": "instructors", "icon": "info"},
+  // {"label": "Activities", "screen": "activities", "icon": "info"},
+  // {"label": "My Groups", "screen": "groups", "icon": "info"},
+  // {"label": "Questions", "screen": "instructors", "icon": "info"},
+  // {"label": "About", "screen": "about", "icon": "info"}
 ];
+
 
 
 
 $(document).ready(function() {
 
-
   // initialize all components with auto-init attributes
   window.mdc.autoInit();
-
+  
+  // fill the screen
+  $("body").css("height", screen.availHeight);
+  $("#contentArea").css("height", "100%");
+  $("#content").css("height", "100%");
+  
   loadDrawerNavigationElements(navItems);
 
   loadScreen("home");
 
   // a constant that references MDCDrawer object
   const drawer = $("aside")[0].MDCDrawer;
+
+  // needs to be global, not just inside the doc ready event since we don't invoke until later
+  window["dialog"] = $(".mdc-dialog")[0].MDCDialog;
+
 
   // open the drawer when the menu icon is clicked
   $(".mdc-top-app-bar__navigation-icon").on("click", function(){
@@ -80,6 +85,21 @@ function loadDrawerNavigationElements(navItems) {
 function loadScreen(screenName) {
   $("#content").load("./screen-content/_" + screenName + ".html", function () {
     console.log("------ Screen load: " + screenName);
-});
+  });
+}
 
+
+function setTitle (titleText) {
+  $(".mdc-top-app-bar__title").text(titleText);
+}
+
+
+function showLoading(message) {
+  $("#loading p").text(message);
+  $("#loading").show();
+}
+
+function hideLoading() {
+   $("#loading p").text("Loading...");
+  $("#loading").hide(); 
 }

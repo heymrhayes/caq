@@ -1,0 +1,65 @@
+<div id="screenContent">
+<!--<h3 class="mdc-typography--headline3">Instructors</h3>-->
+<ul class="mdc-list demo-list mdc-list--two-line">
+  <li class="template mdc-list-item mdc-ripple-upgraded" tabindex="-1"><span class="mdc-list-item__text"><span class="mdc-list-item__primary-text">Line item</span><span class="mdc-list-item__secondary-text">Secondary text</span></span></li>
+</ul>
+</div>
+
+
+<script>
+    
+    showLoading("Loading instructors...");
+    
+    setTitle("Instructors");
+    
+    function displayInstructors(instructors) {
+
+        // clear existing
+        $("#screenContent ul li").not(".template").remove();
+        $("#screenContent ul li").off("click");
+
+        hideLoading();
+
+        $.each(instructors, function(i,v) {
+          var clone = $("#screenContent li.template").clone();
+          clone.find(".mdc-list-item__primary-text").text(v.displayName);
+          //clone.find(".mdc-list-item__secondary-text").text(v.desc);
+          clone.removeClass("template");
+          clone.attr("id", v.username);
+          $("#screenContent ul").append(clone);  
+        });
+        
+        
+
+        //  click sets current instructor
+        $("#screenContent ul li").on("click", function(e) {
+            var target = $(this).attr("id");
+            // console.log(target,app.currentInstructor, !app.currentInstructor,app.currentInstructor.username != target, !app.currentInstructor || app.currentInstructor.username != target)
+            if (!app.currentInstructor || app.currentInstructor.username != target) {
+                app.activities = [];
+                app.activitiesLoadedP = false;
+            
+                app.currentInstructor = app.instructors.find(function(obj) {
+                    return obj.username == target;
+                });
+            }
+            loadScreen("activities");
+        });        
+    }
+    
+    
+    if (!app.instructorsLoadedP) {
+        // get and display the problems
+        $.get(app.endpoint + "?dataset=instructors")
+            .done(function(response){
+                app.instructors = response;
+                app.instructorsLoadedP = true;
+                displayInstructors(app.instructors);
+        });
+    }
+    else {
+        displayInstructors(app.instructors);
+    }
+
+    
+</script>

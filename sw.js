@@ -1,9 +1,9 @@
-var cacheName = 'mca-v1';
+var cacheName = 'atif-v1';
 var appShellFiles = [
  "./index.html",
  "./script.js",
  "./style.css",
- "./warning.png"
+ "./loading.gif"
 ];
 
 
