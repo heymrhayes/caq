@@ -6,7 +6,7 @@
   <li class="template mdc-list-item mdc-ripple-upgraded" tabindex="-1"><span class="mdc-list-item__text"><span class="mdc-list-item__primary-text">Line item</span><span class="mdc-list-item__secondary-text">Secondary text</span></span></li>
 </ul>
 
-<form id="frmCreateGroup">
+<div id="frmCreateGroup">
     <div class="mdc-text-field text-field mdc-text-field--with-trailing-icon mdc-ripple-upgraded" data-mdc-auto-init="MDCTextField">
       <input type="text" class="mdc-text-field__input" id="groupName">
       <label class="mdc-floating-label" for="groupName">Group Name</label>
@@ -20,7 +20,7 @@
       <i class="material-icons mdc-button__icon" aria-hidden="true">save</i>
       Save Group
     </button>
-</form>
+</div>
 </div>
 
 <style>
@@ -118,9 +118,16 @@
                 }
     }) 
 
+    $("#frmCreateGroup").on("submit", function(e){
+        e.preventDefault();
+    })
+
+
     $("#saveGroup").on("click", function(e){
        e.stopImmediatePropagation();
        addGroup(); 
     });
+    
+    
     
 </script>
