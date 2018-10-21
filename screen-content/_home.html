@@ -2,7 +2,7 @@
     
 <p>Use this app to participate in self-paced class activities.</p>
 <p>You'll select your instructor and activity, create a group, and start answering qeutsions.</p>
-<button class="mdc-button mdc-button--raised">
+<button id="btnLoadInstructors" class="mdc-button mdc-button--raised">
   <i class="material-icons mdc-button__icon" aria-hidden="true">forward</i>
   Select instructor
 </button>
@@ -13,7 +13,7 @@
 
     hideLoading();
     
-    $("#screenContent button").on("click", function() {
+    $("#btnLoadInstructors").on("click", function() {
        loadScreen("instructors"); 
     });
     

@@ -33,8 +33,6 @@
 
     setTitle("My Groups");
     
-    $(".mdc-button").off("click");
-
 
     function displayGroups() {
         console.log("starting displayGroups()", app.myGroups);
@@ -67,6 +65,7 @@
 
         //  click sets current group
         $("#screenContent ul li").on("click", function(e) {
+            console.log("e.target",e.target);
             var target = $(this).attr("id");
             console.log(target);
             app.currentGroup = app.myGroups.find(function(obj) {
