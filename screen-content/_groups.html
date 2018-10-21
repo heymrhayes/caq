@@ -58,24 +58,28 @@
                   clone.attr("id", v.name);
                   $("#screenContent ul").append(clone);  
             });                      
-        }
-        
-        console.log("in displayGroups(), after loop", app.myGroups, app.currentGroup);
+
+            console.log("in displayGroups(), after loop", app.myGroups, app.currentGroup);
         
 
-        //  click sets current group
-        $("#screenContent ul li").on("click", function(e) {
-            console.log("e.target",e.target);
-            var target = $(this).attr("id");
-            console.log(target);
-            app.currentGroup = app.myGroups.find(function(obj) {
-                    return obj.name == target;
-            });            
-            //console.log("load questions")
-            loadScreen("questions");
-        });        
+            //  click sets current group
+            $("#screenContent ul li").on("click", function(e) {
+                console.log("e.target",e.target);
+                var target = $(this).attr("id");
+                console.log(target);
+                app.currentGroup = app.myGroups.find(function(obj) {
+                        return obj.name == target;
+                });            
+                //console.log("load questions")
+                loadScreen("questions");
+            });  
         
-        console.log("in displayGroups(), after event handler", app.myGroups, app.currentGroup);
+            console.log("in displayGroups(), after event handler", app.myGroups, app.currentGroup);
+
+        }
+        
+      
+
         
     }
     
