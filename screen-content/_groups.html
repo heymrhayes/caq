@@ -35,7 +35,7 @@
     
 
     function displayGroups() {
-        console.log("starting displayGroups()", app);
+        console.log("starting displayGroups()", app.myGroups);
         if (!app.myGroups || app.myGroups.length == 0) {
             $("#screenContent p").text("Create a new group.")
         } else {
@@ -45,7 +45,7 @@
             $("#screenContent p").text("Choose an existing group or create a new one.")
         }
         
-        
+        console.log("in displayGroups(), b4 loop", app.myGroups, app.currentGroup);
         if (app.myGroups) {
             // clear existing
             $("#screenContent ul li").not(".template").remove();
@@ -59,7 +59,8 @@
                   $("#screenContent ul").append(clone);  
             });                      
         }
-
+        
+        console.log("in displayGroups(), after loop", app.myGroups, app.currentGroup);
         
 
         //  click sets current group
@@ -73,7 +74,7 @@
             loadScreen("questions");
         });        
         
-        
+        console.log("in displayGroups(), after event handler", app.myGroups, app.currentGroup);
         
     }
     
@@ -93,6 +94,8 @@
         
         $("#groupName").val("");
         $("#groupMembers").val("");
+        
+        console.log(app.myGroups, app.currentGroup);
         
         displayGroups();
         
