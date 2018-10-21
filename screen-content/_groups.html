@@ -35,6 +35,7 @@
     
 
     function displayGroups() {
+        console.log("starting displayGroups()", app);
         if (!app.myGroups || app.myGroups.length == 0) {
             $("#screenContent p").text("Create a new group.")
         } else {
@@ -78,6 +79,7 @@
     
     
     function addGroup(){
+        console.log("starting addGroup", app);
         if (!app.myGroups) {
             app.myGroups = [];
         }
