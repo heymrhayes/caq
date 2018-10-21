@@ -28,7 +28,7 @@
 </style>
 
 <script>
-
+    //app.myGroups = [{"name": "dave", "members": ""}];
     window.mdc.autoInit($("#screenContent")[0]);
 
     setTitle("My Groups");
@@ -64,16 +64,16 @@
         
 
         //  click sets current group
-        // $("#screenContent ul li").on("click", function(e) {
-        //     console.log("e.target",e.target);
-        //     var target = $(this).attr("id");
-        //     console.log(target);
-        //     app.currentGroup = app.myGroups.find(function(obj) {
-        //             return obj.name == target;
-        //     });            
-        //     //console.log("load questions")
-        //     loadScreen("questions");
-        // });        
+        $("#screenContent ul li").on("click", function(e) {
+            console.log("e.target",e.target);
+            var target = $(this).attr("id");
+            console.log(target);
+            app.currentGroup = app.myGroups.find(function(obj) {
+                    return obj.name == target;
+            });            
+            //console.log("load questions")
+            loadScreen("questions");
+        });        
         
         console.log("in displayGroups(), after event handler", app.myGroups, app.currentGroup);
         
@@ -105,8 +105,7 @@
     displayGroups();
     
     $("textarea,input").on("input", function(e) {
-        console.log($("#groupName").val().trim(),$("#groupMembers").val().trim() );
-        
+        // validate both non-empty to enable button
         if ($("#groupName").val().trim() !="" &&
                 $("#groupMembers").val().trim() !="") {
                     $("#saveGroup").prop("disabled", false);
@@ -116,6 +115,7 @@
     }) 
 
     $("#saveGroup").on("click", function(e){
+       e.stopImmediatePropagation();
        addGroup(); 
     });
     
