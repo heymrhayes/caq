@@ -35,7 +35,7 @@
     
 
     function displayGroups() {
-        if (!app.myGroups ||  app.myGroups.length == 0) {
+        if (!app.myGroups || app.myGroups.length == 0) {
             $("#screenContent p").text("Create a new group.")
         } else {
             if ($("#frmCreateGroup hr").length == 0) {
@@ -68,7 +68,7 @@
             app.currentGroup = app.myGroups.find(function(obj) {
                     return obj.name == target;
             });            
-            
+            //console.log("load questions")
             loadScreen("questions");
         });        
         
