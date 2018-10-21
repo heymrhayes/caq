@@ -1,4 +1,4 @@
-var cacheName = 'caq-v2';
+var cacheName = 'caq-v3';
 var appShellFiles = [
  "./index.html",
  "./script.js",
