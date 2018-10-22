@@ -48,11 +48,11 @@
 
 <script>
     
+    sendGroupSelection();
+    
     app.currentActivity.currentQuestionIndex = 0;
     
     showLoading("Loading questions for " + app.currentActivity.displayName + " ...");
-
-    
     
     window.mdc.autoInit($("#screenContent")[0]);
     
@@ -322,6 +322,34 @@
         
         
     }
+    
+    function sendGroupSelection() {
+        
+        instructor = app.currentInstructor.username;
+        activity = app.currentActivity.id;
+        group = app.currentGroup.name;
+        
+        var url = app.endpoint + "?action=saveResponse";
+        url += "&instructor=" + instructor;
+        url += "&activity=" + activity;
+        url += "&group=" + group;
+        url += "&question=selectGroup";
+        url += "&answer=" + group;
+        url += "&correct=true";
+        url += "&countCorrect=0";
+        url += "&countIncorrect=0";;
+        
+        $.get(url)
+            .done(function(response) {
+                console.log(response)
+            })
+            .fail(function(err) {
+                console.log(err);
+            })
+        
+        
+    }
+    
     
     function displayQuestions(questions) {
 
