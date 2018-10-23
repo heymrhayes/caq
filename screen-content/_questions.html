@@ -328,13 +328,14 @@
         instructor = app.currentInstructor.username;
         activity = app.currentActivity.id;
         group = app.currentGroup.name;
+        members = app.currentGroup.members;
         
         var url = app.endpoint + "?action=saveResponse";
         url += "&instructor=" + instructor;
         url += "&activity=" + activity;
         url += "&group=" + group;
         url += "&question=selectGroup";
-        url += "&answer=" + group;
+        url += "&answer=" + members;
         url += "&correct=true";
         url += "&countCorrect=0";
         url += "&countIncorrect=0";;
