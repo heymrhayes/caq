@@ -107,12 +107,13 @@
         $.each(answerOptionSuffixes, function(i,v){
             answer = {};
             answerText = question["option" + v];
-            if (answerText != "")  {
+            if (answerText.trim() != "")  {
                 answer.option = v;
                 answer.text = answerText;
                 answer.feedbackText = question["option" + v + "Feedback"];
+                answers.push(answer);
             };
-            answers.push(answer);
+            
         });
         
         return answers;
@@ -174,7 +175,6 @@
                 $("#shortAnswer i").text("");
                 $("#frmShortAnswer").show();
                 $("#frmShortAnswer .mdc-floating-label").text(isNaN(app.currentActivity.currentQuestion.correctAnswer) ? "Enter text" : "Enter a number")
-                
                 break;
         }
 
