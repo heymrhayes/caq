@@ -92,7 +92,8 @@
         
         var group = {};
         group.name = $("#groupName").val().trim();
-        group.members = $("#groupMembers").val().trim();
+        group.members = $("#groupMembers").val().trim().replace("\n",",");
+        
         
         app.myGroups.push(group);
         app.currentGroup = group;
