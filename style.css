@@ -1,7 +1,9 @@
 body {margin: 0;}
-#contentArea {padding-left:24px;}
+#contentArea {}
 .template {display:none;}
+.pad16 {padding: 16px;}
 #loading {display:none; text-align: center;}
+#screenContent ul li .material-icons {cursor: pointer;} 
 
 
 #overlay{

@@ -28,10 +28,11 @@
           //clone.find(".mdc-list-item__secondary-text").text(v.desc);
           clone.removeClass("template");
           clone.attr("id", v.username);
+          $("#screenContent ul").append(listDivider.clone());
           $("#screenContent ul").append(clone);  
         });
         
-        
+        $("#screenContent ul").append(listDivider.clone());
 
         //  click sets current instructor
         $("#screenContent ul li").on("click", function(e) {

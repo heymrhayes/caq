@@ -24,10 +24,17 @@ $(document).ready(function() {
   loadScreen("home");
 
   // a constant that references MDCDrawer object
-  const drawer = $("aside")[0].MDCDrawer;
+  var drawer = $("aside")[0].MDCDrawer;
+  
+  
+  
+  
+  
 
   // needs to be global, not just inside the doc ready event since we don't invoke until later
   window["dialog"] = $(".mdc-dialog")[0].MDCDialog;
+  
+  window["listDivider"] = $("<li>").addClass("mdc-list-divider").attr("role","separator");
 
 
   // open the drawer when the menu icon is clicked

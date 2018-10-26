@@ -1,12 +1,11 @@
 <div id="screenContent">
 <!--<h3 class="mdc-typography--headline3">Activities</h3>-->
 <ul class="mdc-list demo-list mdc-list--two-line">
-  <li class="template mdc-list-item mdc-ripple-upgraded" tabindex="-1"><span class="mdc-list-item__text"><span class="mdc-list-item__primary-text">Line item</span>
+  <li class="template mdc-list-item mdc-ripple-upgraded" tabindex="-1">
+      <span class="mdc-list-item__graphic material-icons" aria-hidden="true">info</span>
+      <span class="mdc-list-item__text"><span class="mdc-list-item__primary-text">Line item</span>
       <span class="mdc-list-item__secondary-text">Secondary text</span></span>
-      <span class="mdc-list-item__meta">
-          <button class="mdc-icon-button material-icons">info</button>
-          <button class="mdc-icon-button material-icons">assessment</button>
-      </span>
+      <span class="mdc-list-item__meta material-icons" aria-hidden="true">assessment</span>
       
       <!--<span class="mdc-list-item__meta material-icons" aria-hidden="true">info</span>-->
       <!--<span class="mdc-list-item__meta material-icons" aria-hidden="true">assessment</span>-->
@@ -23,7 +22,7 @@
     showLoading("Loading activities for " + app.currentInstructor.displayName + " ...");
 
     function displayActivities(activities) {
-
+        
         // clear existing
         $("#screenContent ul li").not(".template").remove();
         $("#screenContent ul li").off("click");
@@ -37,6 +36,7 @@
           clone.addClass(v.active ? "active" : "inactive mdc-list--non-interactive");
           clone.removeClass("template");
           clone.attr("id", v.id);
+          $("#screenContent ul").append(listDivider.clone());
           $("#screenContent ul").append(clone);  
         });
         

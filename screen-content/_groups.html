@@ -1,12 +1,12 @@
 <div id="screenContent">
 <!--<h3 class="mdc-typography--headline3">Activities</h3>-->
-<p>Choose an existing group for this activity or create a new one.</p>
+<p class="pad16">Choose an existing group for this activity or create a new one.</p>
 
-<ul class="mdc-list demo-list mdc-list--two-line">
+<ul id="groupList" class="mdc-list mdc-list--two-line">
   <li class="template mdc-list-item mdc-ripple-upgraded" tabindex="-1"><span class="mdc-list-item__text"><span class="mdc-list-item__primary-text">Line item</span><span class="mdc-list-item__secondary-text">Secondary text</span></span></li>
 </ul>
 
-<div id="frmCreateGroup">
+<div id="frmCreateGroup" class="pad16">
     <div class="mdc-text-field text-field mdc-text-field--with-trailing-icon mdc-ripple-upgraded" data-mdc-auto-init="MDCTextField">
       <input type="text" class="mdc-text-field__input" id="groupName">
       <label class="mdc-floating-label" for="groupName">Group Name</label>
@@ -25,6 +25,7 @@
 
 <style>
     #frmCreateGroup > div { margin-bottom: 24px;}
+    #groupList {display:none;}
 </style>
 
 <script>
@@ -37,16 +38,17 @@
     function displayGroups() {
         console.log("starting displayGroups()", app.myGroups);
         if (!app.myGroups || app.myGroups.length == 0) {
-            $("#screenContent p").text("Create a new group.")
+            $("#screenContent p").text("Create a group for this session")
         } else {
             if ($("#frmCreateGroup hr").length == 0) {
                 $("#frmCreateGroup").prepend("<hr>");
             }
-            $("#screenContent p").text("Choose an existing group or create a new one.")
+            $("#screenContent p").text("Choose an existing group or create a new one")
         }
         
         console.log("in displayGroups(), b4 loop", app.myGroups, app.currentGroup);
-        if (app.myGroups) {
+        if (app.myGroups && app.myGroups.length > 0) {
+            $("#groupList").show();
             // clear existing
             $("#screenContent ul li").not(".template").remove();
             $("#screenContent ul li").off("click");
@@ -56,9 +58,10 @@
                   clone.find(".mdc-list-item__secondary-text").text("Members: " + v.members);
                   clone.removeClass("template");
                   clone.attr("id", v.name);
+                 $("#screenContent ul").append(listDivider.clone());
                   $("#screenContent ul").append(clone);  
             });                      
-
+           $("#screenContent ul").append(listDivider.clone());
             console.log("in displayGroups(), after loop", app.myGroups, app.currentGroup);
         
 
