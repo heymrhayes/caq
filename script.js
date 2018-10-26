@@ -83,6 +83,7 @@ function loadDrawerNavigationElements(navItems) {
  * @param {string} screenName - name to load, without _
  */
 function loadScreen(screenName) {
+  hideRefresh();
   $("#content").load("./screen-content/_" + screenName + ".html", function () {
     console.log("------ Screen load: " + screenName);
   });
@@ -103,3 +104,20 @@ function hideLoading() {
    $("#loading p").text("Loading...");
   $("#loading").hide(); 
 }
+
+function hideRefresh() {
+  $("#refresh").hide();
+}
+
+
+/**
+ * show modal dialog
+ * @function
+ * @param {string} title
+ * @param {string} body
+ */
+function showDialog(title, body) {
+  $(".mdc-dialog__title").html(title);
+  $(".mdc-dialog__content").html(body);
+  window["dialog"].open();
+};

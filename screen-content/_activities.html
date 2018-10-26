@@ -1,7 +1,17 @@
 <div id="screenContent">
 <!--<h3 class="mdc-typography--headline3">Activities</h3>-->
 <ul class="mdc-list demo-list mdc-list--two-line">
-  <li class="template mdc-list-item mdc-ripple-upgraded" tabindex="-1"><span class="mdc-list-item__text"><span class="mdc-list-item__primary-text">Line item</span><span class="mdc-list-item__secondary-text">Secondary text</span></span></li>
+  <li class="template mdc-list-item mdc-ripple-upgraded" tabindex="-1"><span class="mdc-list-item__text"><span class="mdc-list-item__primary-text">Line item</span>
+      <span class="mdc-list-item__secondary-text">Secondary text</span></span>
+      <span class="mdc-list-item__meta">
+          <button class="mdc-icon-button material-icons">info</button>
+          <button class="mdc-icon-button material-icons">assessment</button>
+      </span>
+      
+      <!--<span class="mdc-list-item__meta material-icons" aria-hidden="true">info</span>-->
+      <!--<span class="mdc-list-item__meta material-icons" aria-hidden="true">assessment</span>-->
+      </li></li>
+      
 </ul>
 </div>
 
@@ -23,7 +33,8 @@
         $.each(activities, function(i,v) {
           var clone = $("#screenContent li.template").clone();
           clone.find(".mdc-list-item__primary-text").text(v.displayName);
-          //clone.find(".mdc-list-item__secondary-text").text(v.desc);
+          clone.find(".mdc-list-item__secondary-text").text(v.description);
+          clone.addClass(v.active ? "active" : "inactive mdc-list--non-interactive");
           clone.removeClass("template");
           clone.attr("id", v.id);
           $("#screenContent ul").append(clone);  
@@ -31,7 +42,7 @@
         
 
         //  click sets current activity
-        $("#screenContent ul li").on("click", function(e) {
+        $("#screenContent ul li.active").on("click", function(e) {
             var target = $(this).attr("id");
             console.log(target);
             app.currentActivity = app.activities.find(function(obj) {
@@ -39,12 +50,39 @@
             });
             app.currentActivity.currentQuestionIndex = 0;
             loadScreen("groups");
-        });        
+        });  
         
-        
-        
+         //  click shows modal with info
+        $("#screenContent ul li .material-icons").on("click", function(e) {
+            e.stopImmediatePropagation();
+            var target = $(this).closest("li").attr("id");
+            console.log(target);
+            var targetActivity = app.activities.find(function(obj) {
+                    return obj.id == target;
+            });
+
+            switch ($(this).text()) {
+                case "info":        // show dialog
+                    var dialogBodyHtml = targetActivity.description;
+                    if (targetActivity.documentURL.trim() != "") {
+                        dialogBodyHtml += "<br><a target='_blank' href='" + targetActivity.documentURL + "'>Activity Document</a>";
+                        console.log(dialogBodyHtml);
+                    }
+                    
+                    if (!targetActivity.active) {
+                        dialogBodyHtml += "<br><br>This activity is current <strong>inactive</strong>.";
+                    }
+
+                    showDialog(targetActivity.displayName, dialogBodyHtml);
+                    break;
+                case "assessment" :   // show response data
+                    app.currentActivity = targetActivity;
+                    loadScreen("responses");
+                    break;
+            }
+   
+        });
     }
-    
     
     if (!app.activitiesLoadedP) {
         // get and display the problems

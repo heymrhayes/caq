@@ -1,0 +1,157 @@
+<p>
+    This page displays the question response data for the selected activity.  The colors indicate the "correct" status: green-correct, red-incorrect, white/gray - no response.   The number in the box is the number of incorrect answers; no value indicates the question was answered correctly on the first attempt.
+</p>
+<div id="screenContent">
+
+
+</div>
+
+
+
+<style>
+    table {width:90%;}
+    td {text-align: center;}
+    .correct {background-color: rgba(0,255,0,.25); }
+    .incorrect {background-color: rgba(255,0,0,.25);}
+    tr:nth-child(even) {background: #DDD}
+    tr:nth-child(odd) {background: #FFF}
+</style>
+
+
+<script>
+    
+    setTitle("Responses for activity: " + app.currentActivity.displayName);
+    
+    showLoading("Loading responses for " + app.currentActivity.displayName + " ...");
+    
+    $("#refresh").show();
+    
+     $("#refresh").on("click", function(e) {
+        getResponses(); 
+     });
+    
+    window.mdc.autoInit($("#screenContent")[0]);
+ 
+ 
+    if (app.currentActivity.questions) {
+        createResponseTable();
+        getResponses();
+
+    } else {
+        $.get(app.endpoint + "?action=getQuestions&instructor=" + app.currentInstructor.username + "&activity=" + app.currentActivity.id)
+            .done(function(response){
+                app.currentActivity.questions = response;
+                app.currentActivity.questionsLoadedP = true;
+                createResponseTable();
+                getResponses();
+        });
+
+    }
+        
+        
+    
+
+ 
+    function getResponses() {
+        showLoading();
+        $("#screenContent").empty();
+        // get and display the response
+        $.get(app.endpoint + "?action=getResponses&instructor=" + app.currentInstructor.username + "&activity=" + app.currentActivity.id)
+            .done(function(response){
+                displayResponses(response);
+        });
+    }
+
+
+    function createResponseTable () {
+        var table = $("<table>");
+        var th,td, headerRow, templateRow;
+        $("#screenContent").empty();
+        
+        table.append("<thead>");
+        table.find("thead").append("<tr>");
+        headerRow = table.find("thead tr");
+        templateRow = headerRow.clone();
+        templateRow.addClass("template");
+        templateRow.append("<td class='group'></td>");
+        headerRow.append("<th>Group</th>");
+        
+        table.hide();
+        table.append("<tbody>");
+        
+        $.each(app.currentActivity.questions, function(i,v) {
+            th = $("<th>");
+            th.text(v.id);
+            th.addClass("q" + v.id);
+            headerRow.append(th);
+            td = $("<td>");
+            td.addClass("q" + v.id);
+            templateRow.append(td);
+            
+        })
+        table.find("tbody").append(templateRow);
+        $("#screenContent").append(table);
+        
+        tdCount = $(".template td").length;
+        
+        $(".template td").css("width", (100/tdCount) + "%");
+        
+    }
+
+
+    function displayResponses(data) {
+        var clone;
+        createResponseTable();
+        
+        
+        var groupData = createGroupObjects (data);
+
+        $.each(groupData, function(k,v) {
+            clone = $("tr.template").clone();
+            clone.removeClass("template");
+            clone.find("td.group").text(k);
+            $.each(v.questions, function(qid, qdata) {
+                if (qdata.countIncorrect > 0) {
+                    clone.find("td.q" + qid).text(qdata.countIncorrect);
+                }
+                clone.find("td.q" + qid).addClass(qdata.correct ? "correct" : "incorrect");
+            });
+
+            $("#screenContent table tbody").append(clone);
+            
+        });
+        
+        hideLoading();
+        $("#screenContent table").show();
+        
+    }
+
+
+    function createGroupObjects (responseData) {
+        var data = {}, group, question;
+        $.each(responseData, function(i,v) {
+            if (!data.hasOwnProperty(v.group)) {
+                data[v.group] = {"questions":{}};
+            };
+            
+            group = data[v.group];
+            
+            if (!group.questions.hasOwnProperty(v.question)) {
+                group.questions[v.question] = {"correct": false, "countIncorrect":0};
+            }
+            
+            question = group.questions[v.question];
+            
+            if (v.correct) {
+                question.correct = true;
+            } else {
+                question.countIncorrect ++;
+            }
+            
+            
+        });
+        return data;
+    }
+
+    
+</script>
