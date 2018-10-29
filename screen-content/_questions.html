@@ -246,7 +246,7 @@
         app.currentActivity.currentQuestion.currentAnswer = {"text": answer };
         
         console.log(answer,app.currentActivity.currentQuestion.correctAnswer);
-        var correct = (answer == app.currentActivity.currentQuestion.correctAnswer);
+        var correct = (answer == app.currentActivity.currentQuestion.correctAnswer || app.currentActivity.currentQuestion.correctAnswer.trim() == "");
         
         app.currentActivity.currentQuestion.currentAnswer.correct = correct;
         
