@@ -246,7 +246,15 @@
         app.currentActivity.currentQuestion.currentAnswer = {"text": answer };
         
         console.log(answer,app.currentActivity.currentQuestion.correctAnswer);
-        var correct = (answer == app.currentActivity.currentQuestion.correctAnswer || app.currentActivity.currentQuestion.correctAnswer.trim() == "");
+        
+        var correct = true;
+        
+        if (typeof app.currentActivity.currentQuestion.correctAnswer == "string") {
+            correct = (answer == app.currentActivity.currentQuestion.correctAnswer || app.currentActivity.currentQuestion.correctAnswer.trim() == "");
+        } else {
+            correct = (answer == app.currentActivity.currentQuestion.correctAnswer);
+        }
+
         
         app.currentActivity.currentQuestion.currentAnswer.correct = correct;
         
